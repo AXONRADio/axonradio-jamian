@@ -7,13 +7,12 @@ my section of the code for the CSUN senior project AXONRADio
 * `python predictions.py` to run script to classify youtube links</ol>
 * `python restful_test.py` to run restful flask server</ol>
 
-<hr />
+
 ### Install and run mongodb
 ```
 sudo service mongod start
 mongo --host 127.0.0.1:27017
 ```
-<hr />
 
 ### Run vue app
 ```
