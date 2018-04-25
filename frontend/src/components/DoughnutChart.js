@@ -4,7 +4,7 @@ const {reactiveProp} = mixins
 export default({
   extends: Doughnut,
   mixins: [reactiveProp],
-  props:['options'],
+  props:['chartData','options'],
   mounted(){
     this.renderChart({
       labels: ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal','pop', 'reggae', 'rock'],

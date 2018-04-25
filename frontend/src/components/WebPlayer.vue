@@ -5,9 +5,12 @@
   <v-container grid-list-md>
 
     <v-layout d-flex row wrap>
-      <v-flex xs12 sm8 md12>
+      <v-flex xs12 sm8 md8>
         <h2>Now playing: {{song_name}}</h2>
         <h3>genre: {{this.radios}}</h3>
+      </v-flex>
+      <v-flex md2>
+        <img src="http://i0.kym-cdn.com/entries/icons/original/000/003/231/dancing-spiderman.gif">
       </v-flex>
     <v-divider></v-divider>
     </v-layout>
@@ -186,10 +189,18 @@ export default {
     player () {
       return this.$refs.youtube.player
     }
+  },
+  ready: function() {
+    this.getDbData()
+
+    setInterval(function(){
+      this.getDbData()
+    }.bind(this), 30)
   }
 }
 
 </script>
 
 <style lang="css">
+
 </style>
