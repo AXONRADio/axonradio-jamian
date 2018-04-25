@@ -5,7 +5,8 @@ from time import gmtime, strftime
 from flask_pymongo import PyMongo
 from pymongo import MongoClient
 
-
+client = MongoClient()
+db = client.song_db
 
 def jazz(post):
     jazz_songs = db.jazz
@@ -56,7 +57,7 @@ def putInDb(arg, post):
     func(post)
 
 #def classify_songs():
-while(True):
+def get_genre():
     #remove songs from the music directory
     path = './music'
     for file in os.listdir(path):
@@ -76,12 +77,12 @@ while(True):
         url = '?v='.join([youtubeURL, vidID])
     except TypeError as e:
         print(e)
-        continue
+
     try:
         yc.download_song(url)
     except TypeError as e:
         print(e)
-        continue
+
 
 
     #analyze our songs genre
@@ -89,17 +90,20 @@ while(True):
         genre, song_name, mean = qt.run()
     except Exception as e:
         print(e)
-        continue
+
 
     #put song data in database
-    client = MongoClient()
-    db = client.song_db
     time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
     post = {"name": song_name[:-4],
             "genre": genre,
             "url": url,
             "vidID": vidID,
             "date": time,
-            "mean": mean}
+            "mean": mean,
+            "badLevel": 0}
     putInDb(genre, post)
     print("url: {} \ngenre: {} \ntime entered: {} \n".format(url, genre, time))
+
+if __name__ == '__main__':
+    while(True):
+        get_genre()

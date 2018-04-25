@@ -1,6 +1,9 @@
 <template lang="html">
+
   <div>
+  <input @keyup.space.native="getVideo()"></input>
   <v-container grid-list-md>
+    <input @keyup.enter="trigger"/>
     <v-container>
     <h2>Now playing: {{song_name}}</h2>
     <h3>genre: {{this.radios}}</h3>
@@ -34,6 +37,7 @@
 
         <v-radio label="Metal" value="metal"></v-radio>
         <v-btn @click="getVideo()">New Video</v-btn>
+
       </v-radio-group>
 
     </v-flex>
@@ -72,10 +76,6 @@ export default {
       db_data: {}
     }
   },
-  beforeMount(){
-    this.getVideo()
-    this.getDbData()
-  },
   mounted(){
     this.getVideo()
     this.getDbData()
@@ -84,9 +84,12 @@ export default {
     resetState(){
       this.loaded = false
     },
+    trigger(){
+      this.$refs.sendReply.click()
+    },
     getVideo(){
       this.resetState()
-      axios.get('http://127.0.0.1:5000/api/video/' + this.radios + '/')
+      axios.get('http://localhost:5000/api/video/' + this.radios + '/')
       .then(response => {
         this.song_name = response.data.name
         this.vid_id = response.data.vidID
@@ -98,9 +101,10 @@ export default {
         console.log(error)
       });
     },
+    //https://axonradio-183303.appspot.com
     getDbData(){
       this.resetState()
-      axios.get('http://127.0.0.1:5000/api/data/')
+      axios.get('http://localhost:5000/api/data/')
       .then(response => {
         this.db_data = response.data
         console.log(response.data)
