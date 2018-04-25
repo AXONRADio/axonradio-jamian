@@ -100,10 +100,14 @@ def get_genre():
             "vidID": vidID,
             "date": time,
             "mean": mean,
-            "badLevel": 0}
+            "score": 0}
     putInDb(genre, post)
     print("url: {} \ngenre: {} \ntime entered: {} \n".format(url, genre, time))
 
 if __name__ == '__main__':
     while(True):
-        get_genre()
+        try:
+            get_genre()
+        except Exception as e:
+            print(e)
+            continue

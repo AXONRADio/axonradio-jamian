@@ -1,57 +1,86 @@
 <template lang="html">
 
+
   <div>
-  <input @keyup.space.native="getVideo()"></input>
   <v-container grid-list-md>
-    <input @keyup.enter="trigger"/>
-    <v-container>
-    <h2>Now playing: {{song_name}}</h2>
-    <h3>genre: {{this.radios}}</h3>
+
+    <v-layout d-flex row wrap>
+      <v-flex xs12 sm8 md12>
+        <h2>Now playing: {{song_name}}</h2>
+        <h3>genre: {{this.radios}}</h3>
+      </v-flex>
     <v-divider></v-divider>
-    </v-container>
-    <v-layout  d-flex row wrap>
+    </v-layout>
 
-    <youtube :video-id="vid_id" ref="youtube" @playing="playing" @ended="getVideo()" :player-vars="{autoplay:1}"></youtube>
+    <v-layout d-flex row wrap>
+
+    <v-layout  d-flex column>
+
+      <v-flex md4>
+        <youtube :video-id="vid_id" ref="youtube"
+             @ended="getVideo()" player-width="100%"
+             player-height="100%" :player-vars="{autoplay:1}"></youtube>
+      </v-flex>
+    </v-layout>
+    <v-layout d-flex row wrap>
 
 
-    <v-flex d-flex xs12 sm6 md4>
-    <v-radio-group v-model="radios" :mandatory="false">
-
+      <v-flex xs12 sm8 md6 offset-md0>
+        <v-radio-group v-model="radios" :mandatory="false">
         <v-radio label="Jazz" value="jazz"></v-radio>
-
         <v-radio label="Rock" value="rock"></v-radio>
-
         <v-radio label="Blues" value="blues"></v-radio>
-
         <v-radio label="Pop" value="pop"></v-radio>
-
         <v-radio label="Reggae" value="reggae"></v-radio>
-
-        <v-radio label="Hiphop" value="hiphop"></v-radio>
-
-        <v-radio label="Disco" value="disco"></v-radio>
-
-        <v-radio label="Country" value="country"></v-radio>
-
-        <v-radio label="Classical" value="classical"></v-radio>
-
-        <v-radio label="Metal" value="metal"></v-radio>
-        <v-btn @click="getVideo()">New Video</v-btn>
-
       </v-radio-group>
-
     </v-flex>
-    <v-flex  d-flex xs12 sm6 md4>
+    <v-flex xs12 sm8 md6>
+      <v-radio-group v-model="radios" :mandatory="false">
+        <v-radio label="Hiphop" value="hiphop"></v-radio>
+        <v-radio label="Disco" value="disco"></v-radio>
+        <v-radio label="Country" value="country"></v-radio>
+        <v-radio label="Classical" value="classical"></v-radio>
+        <v-radio label="Metal" value="metal"></v-radio>
+      </v-radio-group>
+    </v-flex>
+    </v-layout>
+
+
+    <v-layout column>
+      <v-flex>
+        <v-btn @click="upvote()" :disabled="votedup == 1" flat icon color="deep-orange">
+          <v-icon>thumb_up</v-icon>
+        </v-btn>
+      </v-flex>
+      <v-flex>
+        <v-btn @click="getVideo()" flat icon large>
+          <v-icon>play_circle_filled</v-icon>
+        </v-btn>
+      </v-flex>
+      <v-flex>
+       <v-btn @click="downvote()" :disabled="voteddn == 1" flat icon color="light-blue">
+         <v-icon>thumb_down</v-icon>
+       </v-btn>
+     </v-flex>
+    </v-layout>
+
+    <v-layout d-flex row wrap align-center>
+    <v-flex xs12 sm6 md4>
         <bar-chart v-if="loaded" :chart-data="this.mean"></bar-chart>
     </v-flex>
-    <v-flex>
-      <p class="text-md-center">Distribution of Current Song DB</p>
+
+    <v-flex xs12 sm6 md4 offset-md3>
+      <doughnut-chart v-if="loaded" :chart-data="this.db_data"></doughnut-chart>
+      <p class='text-sm-center'>Distribution of songs in db</p>
     </v-flex>
-    <v-divider></v-divider>
-        <doughnut-chart v-if="loaded" :chart-data="this.db_data"></doughnut-chart>
   </v-layout>
+
+  </v-layout>
+
   </v-container>
+
   </div>
+
 </template>
 
 <script>
@@ -73,19 +102,51 @@ export default {
       vid_id: '',
       mean: {},
       loaded: false,
+      songID: '',
+      score: '',
+      votedup: false,
+      voteddn: false,
       db_data: {}
     }
   },
   mounted(){
     this.getVideo()
     this.getDbData()
+    this.votedup = false
   },
   methods: {
     resetState(){
       this.loaded = false
+      this.votedup = false
+      this.voteddn = false
     },
-    trigger(){
-      this.$refs.sendReply.click()
+    upvote(){
+        if(this.votedup == false){
+            axios.post('http://localhost:5000/api/upvote/?genre='
+                    + this.radios + '&songID=' + this.songID)
+            .then(response => {
+              console.log(response.data)
+            })
+            .catch(error => {
+              console.log(error)
+            })
+            this.votedup = true
+            this.voteddn = false
+        }
+    },
+    downvote(){
+        if(this.voteddn == false){
+            axios.post('http://localhost:5000/api/downvote/?genre='
+                       + this.radios + '&songID=' + this.songID)
+            .then(response => {
+              console.log(response.data)
+            })
+            .catch(error => {
+              console.log(error)
+            })
+            this.voteddn = true
+            this.votedup = false
+        }
     },
     getVideo(){
       this.resetState()
@@ -94,12 +155,15 @@ export default {
         this.song_name = response.data.name
         this.vid_id = response.data.vidID
         this.mean = response.data.mean
+        this.songID = response.data.id
+        this.score = response.data.score
         this.loaded = true
         console.log(response.data.name)
+        console.log(response.data.score)
       })
       .catch(error => {
         console.log(error)
-      });
+      })
     },
     //https://axonradio-183303.appspot.com
     getDbData(){
@@ -116,11 +180,8 @@ export default {
     },
     playVideo() {
       this.player.playVideo()
-    },
-    playing() {
-      console.log('\o/ we are watching!!!')
     }
-  },
+},
   computed: {
     player () {
       return this.$refs.youtube.player
