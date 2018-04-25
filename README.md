@@ -9,13 +9,21 @@ my section of the code for the CSUN senior project AXONRADio
 
 
 ### Install and run mongodb
+* Make sure mongo db is installed
+* start server with:
 ```
 sudo service mongod start
+```
+* to access the shell
+```
 mongo --host 127.0.0.1:27017
 ```
 
 ### Run vue app
+* to run vue app in debug mode
 ```
 cd frontend
 npm run dev
 ```
+* flask app redirects to dev server if `debug=true`
+* else it will redirect to `backend/build/template`
