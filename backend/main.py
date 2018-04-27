@@ -280,6 +280,7 @@ def updateSwitch(arg1, arg2, arg3):
     func = switcher.get(arg1, lambda:'invalid genre')
     return func(arg2, arg3)
 
+
 # route to the static vue build or the local host
 # when running on dev server
 @app.route('/', defaults={'path': ''})
@@ -330,11 +331,20 @@ def downvote():
     updateSwitch(gid, sid, False)
     return "Song downvoted!"
 
+@app.route('/api/predict', methods=['GET', 'POST'])
+def predict():
+    link = request.args.get('vid_id')
+    info = predictions.get_genre(link)
+    return jsonify(info)
+
+
 #endpoint for background prediction task
 @app.route('/tasks/predict/', methods=['GET'])
 def get_prediction():
     predictions.get_genre()
     return "song succesfully classified"
+
+
 
 # make sure to remove debug mode in production
 if __name__ == '__main__':

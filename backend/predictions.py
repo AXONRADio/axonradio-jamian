@@ -10,34 +10,34 @@ db = client.song_db
 
 def jazz(post):
     jazz_songs = db.jazz
-    post_id = jazz_songs.insert_one(post).inserted_id
+    return jazz_songs.insert_one(post).inserted_id
 def rock(post):
     rock_songs = db.rock
-    post_id = rock_songs.insert_one(post).inserted_id
+    return rock_songs.insert_one(post).inserted_id
 def blues(post):
     blues_songs = db.blues
-    post_id = blues_songs.insert_one(post).inserted_id
+    return blues_songs.insert_one(post).inserted_id
 def pop(post):
     pop_songs = db.pop
-    post_id = pop_songs.insert_one(post).inserted_id
+    return pop_songs.insert_one(post).inserted_id
 def reggae(post):
     reggae_songs = db.reggae
-    post_id = reggae_songs.insert_one(post).inserted_id
+    return reggae_songs.insert_one(post).inserted_id
 def hiphop(post):
     hiphop_songs = db.hiphop
-    post_id = hiphop_songs.insert_one(post).inserted_id
+    return hiphop_songs.insert_one(post).inserted_id
 def disco(post):
     disco_songs = db.disco
-    post_id = disco_songs.insert_one(post).inserted_id
+    return disco_songs.insert_one(post).inserted_id
 def country(post):
     country_songs = db.country
-    post_id = country_songs.insert_one(post).inserted_id
+    return country_songs.insert_one(post).inserted_id
 def classical(post):
     classical_songs = db.classical
-    post_id = classical_songs.insert_one(post).inserted_id
+    return classical_songs.insert_one(post).inserted_id
 def metal(post):
     metal_songs = db.metal
-    post_id = metal_songs.insert_one(post).inserted_id
+    return metal_songs.insert_one(post).inserted_id
 
 
 def putInDb(arg, post):
@@ -57,7 +57,7 @@ def putInDb(arg, post):
     func(post)
 
 #def classify_songs():
-def get_genre():
+def get_genre(vid_id = None):
     #remove songs from the music directory
     path = './music'
     for file in os.listdir(path):
@@ -70,9 +70,10 @@ def get_genre():
 
     #download our random youtube song
     youtubeURL = 'https://www.youtube.com/watch'
-    vidID = yc.youtube_search()
-
-
+    if(vid_id == None):
+        vidID = yc.youtube_search()
+    else:
+        vidID = vid_id
     try:
         url = '?v='.join([youtubeURL, vidID])
     except TypeError as e:
@@ -82,8 +83,6 @@ def get_genre():
         yc.download_song(url)
     except TypeError as e:
         print(e)
-
-
 
     #analyze our songs genre
     try:
@@ -101,13 +100,17 @@ def get_genre():
             "date": time,
             "mean": mean,
             "score": 0}
-    putInDb(genre, post)
-    print("url: {} \ngenre: {} \ntime entered: {} \n".format(url, genre, time))
+
+    #print("url: {} \ngenre: {} \ntime entered: {} \n".format(url, genre, time))
+    if(vid_id == None):
+        putInDb(genre, post)
+    else:
+        return post
 
 if __name__ == '__main__':
-    while(True):
-        try:
-            get_genre()
-        except Exception as e:
-            print(e)
-            continue
+    #while(True):
+    try:
+        get_genre("BqnG_Ei35JE")
+    except Exception as e:
+        print(e)
+        #continue

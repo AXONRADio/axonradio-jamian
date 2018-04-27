@@ -1,7 +1,7 @@
 <template lang="html">
 
 
-  <div>
+  <div >
   <v-container grid-list-md>
 
     <v-layout d-flex row wrap>
@@ -9,9 +9,9 @@
         <h2>Now playing: {{song_name}}</h2>
         <h3>genre: {{this.radios}}</h3>
       </v-flex>
-      <v-flex md2>
+      <!-- <v-flex md2>
         <img src="http://i0.kym-cdn.com/entries/icons/original/000/003/231/dancing-spiderman.gif">
-      </v-flex>
+      </v-flex> -->
     <v-divider></v-divider>
     </v-layout>
 
@@ -25,6 +25,7 @@
              player-height="100%" :player-vars="{autoplay:1}"></youtube>
       </v-flex>
     </v-layout>
+
     <v-layout d-flex row wrap>
 
 
@@ -46,6 +47,7 @@
         <v-radio label="Metal" value="metal"></v-radio>
       </v-radio-group>
     </v-flex>
+
     </v-layout>
 
 
@@ -69,11 +71,11 @@
 
     <v-layout d-flex row wrap align-center>
     <v-flex xs12 sm6 md4>
-        <bar-chart v-if="loaded" :chart-data="this.mean"></bar-chart>
+        <bar-chart v-if="loadedBar" :chart-data="this.mean"></bar-chart>
     </v-flex>
 
     <v-flex xs12 sm6 md4 offset-md3>
-      <doughnut-chart v-if="loaded" :chart-data="this.db_data"></doughnut-chart>
+      <doughnut-chart v-if="loadedDough" :chart-data="this.db_data"></doughnut-chart>
       <p class='text-sm-center'>Distribution of songs in db</p>
     </v-flex>
   </v-layout>
@@ -91,6 +93,7 @@ import axios from 'axios'
 import BarChart from '@/components/BarChart.js'
 import LineChart from '@/components/LineChart.js'
 import DoughnutChart from '@/components/DoughnutChart.js'
+
 export default {
   name: 'app',
   components: {
@@ -100,11 +103,13 @@ export default {
   },
   data(){
     return{
+      image: 'http://i0.kym-cdn.com/entries/icons/original/000/003/231/dancing-spiderman.gif',
       radios: 'jazz',
       song_name: '',
       vid_id: '',
       mean: {},
-      loaded: false,
+      loadedBar: false,
+      loadedDough: false,
       songID: '',
       score: '',
       votedup: false,
@@ -112,14 +117,28 @@ export default {
       db_data: {}
     }
   },
+  watch(){
+    db_data:{
+      this.getDbData()
+    }
+  },
   mounted(){
     this.getVideo()
-    this.getDbData()
-    this.votedup = false
+    // this.getDbData()
+    // setInterval(() => {
+    //     this.getDbData()
+    // }, 30000)
+
   },
+
   methods: {
-    resetState(){
-      this.loaded = false
+    resetBar(){
+      this.loadedBar = false
+    },
+    resetDough(){
+      this.loadedDough = false
+    },
+    resetVotes(){
       this.votedup = false
       this.voteddn = false
     },
@@ -152,7 +171,8 @@ export default {
         }
     },
     getVideo(){
-      this.resetState()
+      this.resetBar()
+      this.resetVotes()
       axios.get('http://localhost:5000/api/video/' + this.radios + '/')
       .then(response => {
         this.song_name = response.data.name
@@ -160,7 +180,7 @@ export default {
         this.mean = response.data.mean
         this.songID = response.data.id
         this.score = response.data.score
-        this.loaded = true
+        this.loadedBar = true
         console.log(response.data.name)
         console.log(response.data.score)
       })
@@ -170,37 +190,38 @@ export default {
     },
     //https://axonradio-183303.appspot.com
     getDbData(){
-      this.resetState()
+      this.resetDough()
       axios.get('http://localhost:5000/api/data/')
       .then(response => {
         this.db_data = response.data
+        this.loadedDough = true
         console.log(response.data)
       })
       .catch(error => {
         console.log(error)
       });
-      this.loaded=true
+
     },
     playVideo() {
       this.player.playVideo()
     }
-},
+  },
   computed: {
     player () {
       return this.$refs.youtube.player
     }
-  },
-  ready: function() {
-    this.getDbData()
-
-    setInterval(function(){
-      this.getDbData()
-    }.bind(this), 30)
   }
 }
 
 </script>
 
 <style lang="css">
-
+/* .circular{
+  width: 500px;
+  height: 500px;
+  background-size: cover;
+  border-radius: 50px;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+} */
 </style>
