@@ -16,15 +16,9 @@
 
      </v-layout>
      <v-layout mt-1>
-       <v-btn color='primary' flat @click="prediction()" :disabled="loading == 1">
-         Predict your song <v-icon right>fingerprint</v-icon>
+       <v-btn color='primary' flat @click="prediction()" :loading="loading" :disabled="loading">
+         Predict your song <v-icon right>fingerprint</v-icon><span slot="loader">Predicting song...</span>
        </v-btn>
-       <button-spinner
-         :isLoading="isLoading"
-         :disabled="isLoading"
-         :status="status">
-         <span>Predict</span>
-        </button-spinner>
      </v-layout>
      <v-layout mt-4 d-flex row wrap>
        <v-flex sm12 md10 lg8>
@@ -36,9 +30,7 @@
        <bar-chart v-if="loadedBar" :chart-data="this.mean"></bar-chart>
        </v-flex>
      </v-layout>
-
      <v-layout>
-
      </v-layout>
   </v-container>
 </template>
@@ -55,8 +47,7 @@ export default{
   },
   data(){
     return{
-      isLoading: false,
-      status: '',
+      loading: false,
       url: '',
       vid_id: '',
       loadedBar: false,
@@ -77,7 +68,7 @@ export default{
             console.log("No link was entered")
           }
           else{
-            this.isLoading = true
+            this.loading = true
             this.resetState()
             this.youTubeGetID()
             axios.post('http://localhost:5000/api/predict?vid_id=' + this.vid_id)
@@ -86,15 +77,12 @@ export default{
               this.song_name = response.data.name
               this.genre = response.data.genre
               this.loadedBar = true
-              this.isLoading = false
-              this.status = true
-              setTimeout(() => { this.status = '' }, 2000)
+              this.loading = false
               console.log(response.data)
               })
               .catch(error =>{
+                this.loading = false
                 console.log(error)
-                this.isLoading = false
-                this.status = false
               })
               this.resetURL()
             }
