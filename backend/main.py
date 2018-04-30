@@ -366,4 +366,4 @@ def get_prediction():
 
 # make sure to remove debug mode in production
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run()
