@@ -22,7 +22,7 @@ from music_tagger_cnn import MusicTaggerCNN
 from utils import save_data, load_dataset, save_dataset, sort_result, predict_label, extract_melgrams
 import matplotlib.pyplot as plt
 
-def run():
+def run(vid_id):
 
     # Parameters to set
     TEST = 1
@@ -40,8 +40,10 @@ def run():
     model_name = "example_model"
     model_path = "models_trained/" + model_name + "/"
     weights_path = "models_trained/" + model_name + "/weights/"
-
-    test_songs_list = "./music"
+    if(vid_id == None):
+        test_songs_list = "./music"
+    else:
+        test_songs_list = "./music2"
 
     # Initialize model
     model = MusicTaggerCRNN(weights=None, input_tensor=(1, 96, 1366))

@@ -59,7 +59,10 @@ def putInDb(arg, post):
 #def classify_songs():
 def get_genre(vid_id = None):
     #remove songs from the music directory
-    path = './music'
+    if(vid_id == None):
+        path = './music'
+    else:
+        path = './music2'
     for file in os.listdir(path):
         file_path = os.path.join(path, file)
         try:
@@ -73,20 +76,20 @@ def get_genre(vid_id = None):
     if(vid_id == None):
         vidID = yc.youtube_search()
     else:
-        vidID = vid_id
+        vidID = str(vid_id)
     try:
         url = '?v='.join([youtubeURL, vidID])
     except TypeError as e:
         print(e)
 
     try:
-        yc.download_song(url)
+        yc.download_song(url, vid_id)
     except TypeError as e:
         print(e)
 
     #analyze our songs genre
     try:
-        genre, song_name, mean = qt.run()
+        genre, song_name, mean = qt.run(vid_id)
     except Exception as e:
         print(e)
 
@@ -108,9 +111,9 @@ def get_genre(vid_id = None):
         return post
 
 if __name__ == '__main__':
-    #while(True):
-    try:
-        get_genre("BqnG_Ei35JE")
-    except Exception as e:
-        print(e)
-        #continue
+    while(True):
+        try:
+            get_genre()
+        except Exception as e:
+            print(e)
+            continue

@@ -5,6 +5,7 @@ import requests
 from flask_cors import CORS
 import random
 import predictions
+from bson.json_util import dumps
 
 ##change this to set the score before songs won't be played##
 score_threshold = -5
@@ -291,9 +292,10 @@ def catch_all(path):
     return render_template("index.html")
 
 # endpoint for a random video query by genre
-@app.route('/api/video/<genre>/', methods=['GET'])
-def get_random_video(genre):
-    ret = countSwitch(genre)
+@app.route('/api/video/', methods=['GET', 'POST'])
+def get_random_video():
+    gid = request.args.get('genre')
+    ret = countSwitch(gid)
     return jsonify({"name": ret['name'], "genre": ret['genre'],
                     "vidID":ret['vidID'], "mean": ret['mean'],
                     "id": str(ret['_id']), "score": ret['score']})
@@ -314,6 +316,25 @@ def get_db_data():
         mongo.db.reggae.count(),
         mongo.db.rock.count()
     ]
+    total = 0
+    for i in range(0, len(ret)):
+        total += ret[i]
+    return jsonify({"collections": ret, "total": total})
+
+@app.route('/api/top/', methods=['GET'])
+def get_top_songs():
+    ret = {
+       "jazz": mongo.db.jazz.find({},{"name": 1, "vidID":1, "_id":0}).limit(1).sort("score", -1)[0],
+       "rock": mongo.db.rock.find({},{"name": 1, "vidID":1, "_id":0}).limit(1).sort("score", -1)[0],
+       "blues": mongo.db.blues.find({},{"name": 1, "vidID":1, "_id":0}).limit(1).sort("score", -1)[0],
+       "pop": mongo.db.pop.find({},{"name": 1, "vidID":1, "_id":0}).limit(1).sort("score", -1)[0],
+       "reggae": mongo.db.reggae.find({},{"name": 1, "vidID":1, "_id":0}).limit(1).sort("score", -1)[0],
+       "hiphop": mongo.db.hiphop.find({},{"name": 1, "vidID":1, "_id":0}).limit(1).sort("score", -1)[0],
+       "disco": mongo.db.disco.find({},{"name": 1, "vidID":1, "_id":0}).limit(1).sort("score", -1)[0],
+       "country": mongo.db.country.find({},{"name": 1, "vidID":1, "_id":0}).limit(1).sort("score", -1)[0],
+       "classical": mongo.db.classical.find({},{"name": 1, "vidID":1, "_id":0}).limit(1).sort("score", -1)[0],
+       "metal": mongo.db.metal.find({},{"name": 1, "vidID":1, "_id":0}).limit(1).sort("score", -1)[0],
+    }
     return jsonify(ret)
 
 #localhost:5000/api/upvote/?genre=metal&songID=5adfab685db15f2f1e9c3569
@@ -337,14 +358,11 @@ def predict():
     info = predictions.get_genre(link)
     return jsonify(info)
 
-
 #endpoint for background prediction task
 @app.route('/tasks/predict/', methods=['GET'])
 def get_prediction():
     predictions.get_genre()
     return "song succesfully classified"
-
-
 
 # make sure to remove debug mode in production
 if __name__ == '__main__':

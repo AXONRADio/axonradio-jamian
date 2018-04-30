@@ -122,19 +122,30 @@ def getRandomId():
 
 
 #uses youtube_dl to download only the audio portions of youtube link
-def download_song(url):
+def download_song(url, vid_id):
     #outtmpl option determines where your file will be output
-    ydl_opts = {
-        'ignoreerrors': True,
-        'format' : 'bestaudio/best',
-        'postprocessors' : [{
-            'key' : 'FFmpegExtractAudio',
-            'preferredcodec' : 'wav',
-            'preferredquality' : '192',
-        }],
-        'outtmpl' : './music/%(title)s.%(ext)s',
-    }
-
+    if(vid_id == None):
+        ydl_opts = {
+            'ignoreerrors': True,
+            'format' : 'bestaudio/best',
+            'postprocessors' : [{
+                'key' : 'FFmpegExtractAudio',
+                'preferredcodec' : 'wav',
+                'preferredquality' : '192',
+            }],
+            'outtmpl' : './music/%(title)s.%(ext)s',
+        }
+    else:
+        ydl_opts = {
+            'ignoreerrors': True,
+            'format' : 'bestaudio/best',
+            'postprocessors' : [{
+                'key' : 'FFmpegExtractAudio',
+                'preferredcodec' : 'wav',
+                'preferredquality' : '192',
+            }],
+            'outtmpl' : './music2/%(title)s.%(ext)s',
+        }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         try:
             ydl.download([url])

@@ -1,142 +1,116 @@
 <template lang="html">
+<div v-on:keyup="pressKeys">
+<v-container grid-list-md ml-4 mt-2>
+  <v-layout d-flex row wrap>
+      <h2>{{song_name}}</h2>
+  </v-layout>
+  <v-layout mt-2>
+      <h3>{{radios}}</h3>
+  </v-layout>
+  <v-layout mt-3 mb-3>
+      <v-divider></v-divider>
+  </v-layout>
+  <v-layout d-flex row wrap>
 
-
-  <div >
-  <v-container grid-list-md>
-
-    <v-layout d-flex row wrap>
-      <v-flex xs12 sm8 md8>
-        <h2>Now playing: {{song_name}}</h2>
-        <h3>genre: {{this.radios}}</h3>
-      </v-flex>
-      <!-- <v-flex md2>
-        <img src="http://i0.kym-cdn.com/entries/icons/original/000/003/231/dancing-spiderman.gif">
-      </v-flex> -->
-    <v-divider></v-divider>
-    </v-layout>
-
-    <v-layout d-flex row wrap>
-
-    <v-layout  d-flex column>
-
-      <v-flex md4>
-        <youtube :video-id="vid_id" ref="youtube"
+      <v-flex xs12 sm12 md9 lg8 mr-4>
+       <youtube :video-id="vid_id" ref="youtube"
              @ended="getVideo()" player-width="100%"
              player-height="100%" :player-vars="{autoplay:1}"></youtube>
       </v-flex>
-    </v-layout>
 
-    <v-layout d-flex row wrap>
+      <v-layout column>
 
+        <v-layout>
+          <!-- <v-jumbotron color="primary">  </v-jumbotron> -->
+          <v-flex xs6 sm6 md6 lg4 offset-xs2 offset-sm2 offset-md0>
+            <v-radio-group v-model="radios" :mandatory="false">
+            <v-radio label="Jazz" value="jazz" color="primary"></v-radio>
+            <v-radio label="Rock" value="rock" color="primary"></v-radio>
+            <v-radio label="Blues" value="blues" color="primary"></v-radio>
+            <v-radio label="Pop" value="pop" color="primary"></v-radio>
+            <v-radio label="Reggae" value="reggae" color="primary"></v-radio>
+            </v-radio-group>
+          </v-flex>
+          <v-flex xs8 sm8 md7 lg4>
+            <v-radio-group v-model="radios" :mandatory="false">
+            <v-radio label="Hiphop" value="hiphop" color="primary"></v-radio>
+            <v-radio label="Disco/techno/electronic" value="disco" color="primary"></v-radio>
+            <v-radio label="Country" value="country" color="primary"></v-radio>
+            <v-radio label="Classical" value="classical" color="primary"></v-radio>
+            <v-radio label="Metal" value="metal" color="primary"></v-radio>
+            </v-radio-group>
+          </v-flex>
 
-      <v-flex xs12 sm8 md6 offset-md0>
-        <v-radio-group v-model="radios" :mandatory="false">
-        <v-radio label="Jazz" value="jazz"></v-radio>
-        <v-radio label="Rock" value="rock"></v-radio>
-        <v-radio label="Blues" value="blues"></v-radio>
-        <v-radio label="Pop" value="pop"></v-radio>
-        <v-radio label="Reggae" value="reggae"></v-radio>
-      </v-radio-group>
-    </v-flex>
-    <v-flex xs12 sm8 md6>
-      <v-radio-group v-model="radios" :mandatory="false">
-        <v-radio label="Hiphop" value="hiphop"></v-radio>
-        <v-radio label="Disco" value="disco"></v-radio>
-        <v-radio label="Country" value="country"></v-radio>
-        <v-radio label="Classical" value="classical"></v-radio>
-        <v-radio label="Metal" value="metal"></v-radio>
-      </v-radio-group>
-    </v-flex>
+        </v-layout>
 
-    </v-layout>
-
-
-    <v-layout column>
-      <v-flex>
-        <v-btn @click="upvote()" :disabled="votedup == 1" flat icon color="deep-orange">
-          <v-icon>thumb_up</v-icon>
-        </v-btn>
-      </v-flex>
-      <v-flex>
-        <v-btn @click="getVideo()" flat icon large>
-          <v-icon>play_circle_filled</v-icon>
-        </v-btn>
-      </v-flex>
-      <v-flex>
-       <v-btn @click="downvote()" :disabled="voteddn == 1" flat icon color="light-blue">
-         <v-icon>thumb_down</v-icon>
-       </v-btn>
-     </v-flex>
-    </v-layout>
-
-    <v-layout d-flex row wrap align-center>
-    <v-flex xs12 sm6 md4>
+        <v-layout d-flex column >
+          <v-flex>
+            <v-flex md4 offset-xs3 offset-sm3 offset-md2 offset-lg1>
+              <v-btn @click="upvote()" :disabled="votedup == 1" flat color="deep-orange">
+                upvote<v-icon right>keyboard_arrow_up</v-icon>
+              </v-btn>
+            </v-flex>
+            <v-flex md4 offset-xs3 offset-sm3 offset-md2 offset-lg1>
+              <v-btn @click="getVideo()" @keyup.enter="getVideo" flat >New song!
+                <v-icon color="primary" right>skip_next</v-icon>
+              </v-btn>
+            </v-flex>
+            <v-flex md4 offset-xs3 offset-sm3 offset-md2 offset-lg1>
+              <v-btn @click="downvote()" :disabled="voteddn == 1" flat color="light-blue">
+                downvote<v-icon>keyboard_arrow_down</v-icon>
+              </v-btn>
+            </v-flex>
+          </v-flex>
+        </v-layout>
+       </v-layout>
+   </v-layout>
+   <v-layout d-flex row wrap mt-4>
+    <v-flex xs12 sm8 md12 lg10>
         <bar-chart v-if="loadedBar" :chart-data="this.mean"></bar-chart>
     </v-flex>
-
-    <v-flex xs12 sm6 md4 offset-md3>
-      <doughnut-chart v-if="loadedDough" :chart-data="this.db_data"></doughnut-chart>
-      <p class='text-sm-center'>Distribution of songs in db</p>
-    </v-flex>
-  </v-layout>
-
-  </v-layout>
-
-  </v-container>
-
-  </div>
-
+   </v-layout>
+</v-container>
+</div>
 </template>
 
 <script>
 import axios from 'axios'
 import BarChart from '@/components/BarChart.js'
 import LineChart from '@/components/LineChart.js'
-import DoughnutChart from '@/components/DoughnutChart.js'
 
 export default {
-  name: 'app',
+  name: 'WebPlayer',
   components: {
     BarChart,
     LineChart,
-    DoughnutChart
+
   },
   data(){
     return{
       image: 'http://i0.kym-cdn.com/entries/icons/original/000/003/231/dancing-spiderman.gif',
-      radios: 'jazz',
+      radios: 'classical',
       song_name: '',
       vid_id: '',
       mean: {},
       loadedBar: false,
-      loadedDough: false,
       songID: '',
       score: '',
       votedup: false,
       voteddn: false,
-      db_data: {}
     }
   },
-  watch(){
-    db_data:{
-      this.getDbData()
-    }
-  },
+  // watch() {
+  //   db_data: {
+  //     this.getDbData()
+  //   }
+  // },
   mounted(){
     this.getVideo()
-    // this.getDbData()
-    // setInterval(() => {
-    //     this.getDbData()
-    // }, 30000)
-
   },
 
   methods: {
     resetBar(){
       this.loadedBar = false
-    },
-    resetDough(){
-      this.loadedDough = false
     },
     resetVotes(){
       this.votedup = false
@@ -170,10 +144,21 @@ export default {
             this.votedup = false
         }
     },
+    pressKeys: function(e){
+      if(e.keyCode === 32){
+        this.getVideo()
+      }
+      if(e.keyCode === 65){
+        this.upvote()
+      }
+      if(e.keyCode === 90){
+        this.downvote()
+      }
+    },
     getVideo(){
       this.resetBar()
       this.resetVotes()
-      axios.get('http://localhost:5000/api/video/' + this.radios + '/')
+      axios.get('http://localhost:5000/api/video/?genre=' + this.radios)
       .then(response => {
         this.song_name = response.data.name
         this.vid_id = response.data.vidID
@@ -189,19 +174,7 @@ export default {
       })
     },
     //https://axonradio-183303.appspot.com
-    getDbData(){
-      this.resetDough()
-      axios.get('http://localhost:5000/api/data/')
-      .then(response => {
-        this.db_data = response.data
-        this.loadedDough = true
-        console.log(response.data)
-      })
-      .catch(error => {
-        console.log(error)
-      });
 
-    },
     playVideo() {
       this.player.playVideo()
     }
@@ -210,18 +183,12 @@ export default {
     player () {
       return this.$refs.youtube.player
     }
-  }
+  },
+
 }
 
 </script>
 
 <style lang="css">
-/* .circular{
-  width: 500px;
-  height: 500px;
-  background-size: cover;
-  border-radius: 50px;
-  -webkit-border-radius: 50px;
-  -moz-border-radius: 50px;
-} */
+
 </style>
