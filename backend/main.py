@@ -366,4 +366,4 @@ def get_prediction():
 
 # make sure to remove debug mode in production
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=80)
