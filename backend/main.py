@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify, url_for, redirect, request, render_template
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
@@ -26,6 +27,8 @@ app = CustomFlask(__name__,
                   template_folder = "./dist")
 
 cors = CORS(app, resources={r"/api/*": {"origins":"http://localhost:5000"}})
+# app.config['MONGO_HOST'] = os.environ['DB_PORT_27017_TCP_ADDR']
+# app.config['MONGO_PORT'] = 27017
 app.config['MONGO_DBNAME'] = 'song_db'
 mongo = PyMongo(app, config_prefix='MONGO')
 
@@ -366,4 +369,4 @@ def get_prediction():
 
 # make sure to remove debug mode in production
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0')
