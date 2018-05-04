@@ -118,7 +118,7 @@ export default {
     },
     upvote(){
         if(this.votedup == false){
-            axios.post('http://167.99.98.179:5000/api/upvote/?genre='
+            axios.post('http://167.99.98.179/api/upvote/?genre='
                     + this.radios + '&songID=' + this.songID)
             .then(response => {
               console.log(response.data)
@@ -132,7 +132,7 @@ export default {
     },
     downvote(){
         if(this.voteddn == false){
-            axios.post('http://167.99.98.179:5000/api/downvote/?genre='
+            axios.post('http://167.99.98.179/api/downvote/?genre='
                        + this.radios + '&songID=' + this.songID)
               .then(response => {
               console.log(response.data)
@@ -158,7 +158,7 @@ export default {
     getVideo(){
       this.resetBar()
       this.resetVotes()
-      axios.get('http://167.99.98.179:5000/api/video/?genre=' + this.radios)
+      axios.get('http://167.99.98.179/api/video/?genre=' + this.radios)
       .then(response => {
         this.song_name = response.data.name
         this.vid_id = response.data.vidID

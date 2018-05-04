@@ -36,7 +36,7 @@ export default {
     },
     getDbData(){
       this.resetDough()
-      axios.get('http://167.99.98.179:5000/api/data/')
+      axios.get('http://167.99.98.179/api/data/')
       .then(response => {
         this.db_data = response.data.collections
         this.total = response.data.total

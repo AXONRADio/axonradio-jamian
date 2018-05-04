@@ -61,7 +61,7 @@ export default {
   },
   methods:{
     getTopData(){
-      axios.get('http://167.99.98.179:5000/api/top/')
+      axios.get('http://167.99.98.179/api/top/')
       .then(response => {
         this.jazz = response.data.jazz.name
         this.jazzid = response.data.jazz.vidID
