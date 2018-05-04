@@ -71,7 +71,7 @@ export default{
             this.loading = true
             this.resetState()
             this.youTubeGetID()
-            axios.post('http://localhost:5000/api/predict?vid_id=' + this.vid_id)
+            axios.post('http://167.99.98.179:5000/api/predict?vid_id=' + this.vid_id)
             .then(response => {
               this.mean = response.data.mean
               this.song_name = response.data.name

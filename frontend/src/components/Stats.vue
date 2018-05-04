@@ -1,7 +1,7 @@
 <template lang="html">
   <v-container d-flex>
-  <v-layout mt-5>
-    <v-flex mt-5 xs10 sm8 md8 offset-sm2>
+  <v-layout mt-3>
+    <v-flex mt-5 xs10 sm8 md8 offset-sm1>
       <h1 class="text-xs-center">Song Database</h1>
       <v-divider></v-divider>
       <doughnut-chart v-if="loadedDough" :chart-data="this.db_data"></doughnut-chart>
@@ -36,7 +36,7 @@ export default {
     },
     getDbData(){
       this.resetDough()
-      axios.get('http://localhost:5000/api/data/')
+      axios.get('http://167.99.98.179:5000/api/data/')
       .then(response => {
         this.db_data = response.data.collections
         this.total = response.data.total
