@@ -1,0 +1,12 @@
+[Unit]
+Description=uWSGI instance to serve axonradio
+After=network.target
+
+[Service]
+User=jamian
+Group=www-data
+ExecStart=/bin/bash -c 'cd /home/jamian/axonradio-jamian/backend/ && source /home/jamian/anaconda2/bin/activate axonradio &&  uwsgi --ini axonradio.ini'
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

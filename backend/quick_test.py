@@ -1,7 +1,8 @@
-import matplotlib
-matplotlib.use('Agg')
+# import matplotlib
+# matplotlib.use('Agg')
 
 from keras import backend as K
+K.set_image_dim_ordering('th')
 import os
 import time
 import h5py
@@ -13,9 +14,9 @@ from keras.utils import np_utils
 from math import floor
 from music_tagger_cnn import MusicTaggerCNN
 from utils import save_data, load_dataset, save_dataset, sort_result, predict_label, extract_melgrams
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
-def run(vid_id):
+def run(path):
 
     # Parameters to set
     TEST = 1
@@ -33,10 +34,13 @@ def run(vid_id):
     model_name = "example_model"
     model_path = "models_trained/" + model_name + "/"
     weights_path = "models_trained/" + model_name + "/weights/"
-    if(vid_id == None):
-        test_songs_list = "./music"
-    else:
-        test_songs_list = "./music2"
+
+    test_songs_list = path
+
+    #if(vid_id == None):
+    #    test_songs_list = "./music"
+    #else:
+    #    test_songs_list = "./music2"
 
     # Initialize model
     model = MusicTaggerCRNN(weights=None, input_tensor=(1, 96, 1366))

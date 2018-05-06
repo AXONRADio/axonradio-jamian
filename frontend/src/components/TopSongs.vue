@@ -7,7 +7,7 @@
         <v-divider></v-divider>
     </v-layout>
     <v-layout mt-5>
-      <v-flex offset-xs2 offset-sm1 offset-md1 offset-lg1 sm8 md6 lg4 xl1>
+      <v-flex offset-xs2 offset-sm1 offset-md1 offset-lg1 sm8 md6 lg4>
         <v-btn block @click="setVidId(jazzid)" class="red lighten-2" light>Jazz: {{jazz.slice(0,30)}}</v-btn>
         <v-btn block @click="setVidId(rockid)" color="red lighten-1" light>Rock: {{rock.slice(0,30)}}</v-btn>
         <v-btn block @click="setVidId(bluesid)" color="pink lighten-3" light>Blues: {{blues.slice(0,30)}}</v-btn>

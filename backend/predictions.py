@@ -59,17 +59,17 @@ def putInDb(arg, post):
 #def classify_songs():
 def get_genre(vid_id = None):
     #remove songs from the music directory
-    if(vid_id == None):
-        path = './music'
-    else:
-        path = './music2'
-    for file in os.listdir(path):
-        file_path = os.path.join(path, file)
-        try:
-            if os.path.isfile(file_path):
-                os.unlink(file_path)
-        except Exception as e:
-            print(e)
+    #if(vid_id == None):
+    #    path = './music'
+    #else:
+    #    path = './music2'
+    #for file in os.listdir(path):
+    #    file_path = os.path.join(path, file)
+    #    try:
+    #        if os.path.isfile(file_path):
+    #            os.unlink(file_path)
+    #    except Exception as e:
+    #        print(e)
 
     #download our random youtube song
     youtubeURL = 'https://www.youtube.com/watch'
@@ -83,17 +83,17 @@ def get_genre(vid_id = None):
         print(e)
 
     try:
-        yc.download_song(url, vid_id)
+        path = yc.download_song(url)
     except TypeError as e:
         print(e)
 
     #analyze our songs genre
     try:
-        genre, song_name, mean = qt.run(vid_id)
+        genre, song_name, mean = qt.run(path)
     except Exception as e:
         print(e)
 
-
+    shutil.rmtree(path)
     #put song data in database
     time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
     post = {"name": song_name[:-4],
@@ -111,9 +111,7 @@ def get_genre(vid_id = None):
         return post
 
 if __name__ == '__main__':
-    while(True):
-        try:
-            get_genre()
-        except Exception as e:
-            print(e)
-            continue
+    try:
+        get_genre()
+    except Exception as e:
+        print(e)	
